@@ -14,6 +14,7 @@ for _ in range(T):
         
         if n == B:
             print(operation)
+            break
             
         D_num = n*2 % 10000
         if not visited[D_num]:

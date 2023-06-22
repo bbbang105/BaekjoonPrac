@@ -32,5 +32,4 @@ for a,b,w in roads:
         expend.append(w)
 
 # Output
-expend = sorted(expend)[:-1]
-print(sum(expend))
+print(sum(expend[:-1]))

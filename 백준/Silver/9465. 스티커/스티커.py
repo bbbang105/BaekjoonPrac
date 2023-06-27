@@ -1,0 +1,23 @@
+import sys
+input = sys.stdin.readline
+
+T = int(input())
+for _ in range(T):
+    N = int(input())
+    dp = [list(map(int,input().split())) for _ in range(2)]
+    
+    if N == 1:
+        print(max(dp[0][0],dp[1][0]))
+        continue
+    
+    # 두번째 열까지 저장
+    dp[0][1] += dp[1][0]
+    dp[1][1] += dp[0][0]
+    
+    for i in range(2,N):
+        # 계속 지그재그로 가는 경우와 한 칸을 건너뛴 경우를 비교
+        dp[0][i] += max(dp[1][i-1],dp[1][i-2])
+        dp[1][i] += max(dp[0][i-1],dp[0][i-2])
+        
+    print(max(dp[0][N-1],dp[1][N-1]))
+        

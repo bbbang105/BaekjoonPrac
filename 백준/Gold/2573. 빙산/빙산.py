@@ -1,52 +1,73 @@
-import collections
+import sys
+from collections import deque
+input = sys.stdin.readline
 
-n, m = map(int, input().split())
-graph = [list(map(int,input().split())) for _ in range(n)]
-dx, dy = [-1, 1, 0, 0], [0, 0, -1, 1]
-queue = collections.deque()
-day = 0
-check = False
-
-def bfs(a,b):
-    queue.append((a,b))
-    while queue:
-        x,y = queue.popleft()
-        visited[x][y] = True
+# BFS
+def BFS(x,y):
+    visited[x][y] = True
+    sea_lst = []
+    Q = deque()
+    Q.append((x,y))
+    
+    while Q:
+        x,y = Q.popleft()
+        
+        sea = 0 # 인접한 바다물의 개수
         for i in range(4):
             nx = x + dx[i]
             ny = y + dy[i]
-            if 0 <= nx < n and 0 <= ny < m:
-                if graph[nx][ny] != 0 and visited[nx][ny] == False:
+            if 0 <= nx < N and 0 <= ny < M:
+                # 바다인 경우
+                if not graph[nx][ny]:
+                    sea += 1
+                # 첫 방문하는 빙산인 경우
+                if graph[nx][ny] and not visited[nx][ny]: 
                     visited[nx][ny] = True
-                    queue.append((nx,ny))
-                elif graph[nx][ny] == 0:
-                    count[x][y] += 1
-    return 1
+                    Q.append((nx,ny))
+        # 좌표와 인접한 바다물의 개수를 저장     
+        if sea > 0:
+            sea_lst.append((x,y,sea))
+    # 빙산을 녹이는 과정        
+    for x,y,n in sea_lst:
+        graph[x][y] = max(0, graph[x][y] - n)
+         
+    return 1  # 탐색 종료는 그룹 하나가 끝났음을 의미 
 
-# 빙산이 분리될때까지 돌아줌
-while True:
-    visited = [[False]*m for _ in range(n)]
-    count = [[0]*m for _ in range(n)]
-    result = []
-    for i in range(n):
-        for j in range(m):
-            if graph[i][j] != 0 and visited[i][j] == False:
-                result.append(bfs(i,j))
-    # 빙산을 깍아줌           
-    for i in range(n):
-        for j in range(m):
-            graph[i][j] -= count[i][j]
-            if graph[i][j] < 0:
-                graph[i][j] = 0
+# 입력
+N,M = map(int,input().split())
+graph = [list(map(int,input().split())) for _ in range(N)]
+
+dx = [1,-1,0,0]
+dy = [0,0,-1,1]
+
+# 초기 빙산의 위치 찾기
+ice = []
+for i in range(N):
+    for j in range(M):
+        if graph[i][j] > 0:
+            ice.append((i,j))
+            
+# 년도별 변화   
+year = 0        
+while ice:
+    visited = [[False]*M for _ in range(N)]
+    del_lst = [] # 다 녹아버린 빙산의 정보를 저장
+    group = 0
     
-    if len(result) == 0: # 빙산이 다없어질때까지 분리가 되지않으면 break
-        break
-    if len(result) >= 2: # 빙산이 분리되면 break
-        check = True
-        break
-    day += 1
-
-if check:        
-    print(day)
-else:
-    print(0)
+    for x,y in ice:
+        # 빙산 그룹 탐색
+        if graph[x][y] and not visited[x][y]:
+            group += BFS(x,y)
+        # 탐색이 끝난 후에, 다 녹아버린 빙산을 찾아 저장
+        if graph[x][y] == 0:
+            del_lst.append((x,y))
+    
+    # 두 그룹 이상으로 나눠진 경우                            
+    if group >= 2:
+        print(year)
+        exit(0)
+        
+    ice = list(set(ice) - set(del_lst)) # 다 녹은 빙산을 제외
+    year += 1  # 년도 추가
+    
+print(0)

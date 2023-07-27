@@ -1,3 +1,4 @@
+# nk를 만들어도 괜찮다!
 import sys
 from collections import deque
 input = sys.stdin.readline
@@ -17,19 +18,20 @@ def bfs(k,x,y):
             return visited[k][x][y]
         # 상하좌우 이동
         for i in range(4):
-            mx = x + dx[i]
-            my = y + dy[i]
-            if 0 <= mx < N and 0 <= my < M:                   
+            nk = k-1
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if 0 <= nx < N and 0 <= ny < M:                   
                 # 이동할 곳이 벽이지만 기회가 있는 경우
-                if graph[mx][my] == 1 and not visited[k-1][mx][my] and k:
+                if graph[nx][ny] == 1 and not visited[nk][nx][ny] and k:
                     # 기회 사용 후 이동
-                    visited[k-1][mx][my] = visited[k][x][y] + 1
-                    Q.append((k-1,mx,my))
+                    visited[nk][nx][ny] = visited[k][x][y] + 1
+                    Q.append((nk,nx,ny))
            
                 # 이동할 곳이 빈 공간인 경우
-                elif graph[mx][my] == 0 and not visited[k][mx][my]:
-                    visited[k][mx][my] = visited[k][x][y] + 1
-                    Q.append((k,mx,my))
+                elif graph[nx][ny] == 0 and not visited[k][nx][ny]:
+                    visited[k][nx][ny] = visited[k][x][y] + 1
+                    Q.append((k,nx,ny))
     
     return -1               
 

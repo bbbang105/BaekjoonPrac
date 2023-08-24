@@ -29,6 +29,8 @@
 12. 너비우선 탐색 (BFS)
 13. 깊이우선 탐색 (DFS)
 14. 다익스트라
-15. 유니온 파인드 & 크루스칼
-16. 플로이드-워셜
-17. CCW (Counter-Clockwise)
+15. 유니온 파인드
+16. 크루스칼
+17. 플로이드-워셜
+18. CCW (Counter-Clockwise)
+19. LCS (Longest Common Subsequence) 

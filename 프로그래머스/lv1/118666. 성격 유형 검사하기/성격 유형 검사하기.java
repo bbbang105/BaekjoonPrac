@@ -37,30 +37,14 @@ class Solution {
             }
         }
         // 지표 점수 비교
-        if (R > T) answer += "R";
-        else if (R < T){
-            answer += "T";
-        } else {
-            answer += "R";
-        }
-        if (C > F) answer += "C";
-        else if (C < F) {
-            answer += "F";
-        } else {
-            answer += "C";
-        }
-        if (J > M) answer += "J";
-        else if (J < M) {
-            answer += "M";
-        } else {
-            answer += "J";
-        }
-        if (A > N) answer += "A";
-        else if (A < N) {
-            answer += "N";
-        } else {
-            answer += "A";
-        }
+        if (R >= T) answer += "R";
+        else { answer += "T"; }
+        if (C >= F) answer += "C";
+        else { answer += "F"; }
+        if (J >= M) answer += "J";
+        else { answer += "M"; }
+        if (A >= N) answer += "A";
+        else { answer += "N"; }
 
         return answer;
     }

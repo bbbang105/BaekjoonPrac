@@ -33,7 +33,4 @@ class Solution {
         }
         return answer;
     }
-    public static void main(String args[]) {
-        System.out.println(solution(new String[]{"aya", "yee", "u"}));
-    }
 }

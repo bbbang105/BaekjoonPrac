@@ -1,27 +1,46 @@
-import java.util.*;
 class Solution {
-	 public String solution(int a, int b) {
-		 String day = "" ; 
-
-		 Calendar cal = Calendar.getInstance(); 
-		 cal.set(2016,a -1,b);
-		 int dayNum = cal.get(Calendar.DAY_OF_WEEK); 
-		 switch(dayNum){ 
-		 	case 1: day = "SUN"; 
-		 	break; 
-		 	case 2: day = "MON"; 
-		 	break; 
-		 	case 3: day = "TUE"; 
-		 	break; 
-		 	case 4: day = "WED"; 
-		 	break; 
-		 	case 5: day = "THU"; 
-		 	break; 
-		 	case 6: day = "FRI";
-		 	break; 
-		 	case 7: day = "SAT"; 
-            		break; 
-		 } 
-		 return day ;
-	 }
+    public static String solution(int a, int b) {
+        String answer = "";
+        // 1월 1일로부터 며칠이 지났는지 파악
+        int day_sum = b;
+        for (int month = 1; month < a; month++) {
+            switch (month) {
+                case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                    day_sum += 31;
+                    break;
+                case 4: case 6: case 9: case 11:
+                    day_sum += 30;
+                    break;
+                case 2: // 윤년 2월
+                    day_sum += 29;
+                    break;
+            }
+        }
+        // 무슨 요일인지 확인
+        int day_num = (day_sum % 7);
+        switch (day_num) {
+            case 1:
+                answer = "FRI";
+                break;
+            case 2:
+                answer = "SAT";
+                break;
+            case 3:
+                answer = "SUN";
+                break;
+            case 4:
+                answer = "MON";
+                break;
+            case 5:
+                answer = "TUE";
+                break;
+            case 6:
+                answer = "WED";
+                break;
+            case 0:
+                answer = "THU";
+                break;
+        }
+        return answer;
+    }
 }

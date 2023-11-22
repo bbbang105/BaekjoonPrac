@@ -10,7 +10,7 @@ answer = sum(C) # Cost의 최댓값
 for i in range(1,N+1): # i는 앱 번호를 의미
     byte = B[i]
     cost = C[i]
-    for j in range(1,sum(C)+1): # j는 cost를 의미
+    for j in range(0,sum(C)+1): # j는 cost를 의미
         # 현재 cost로 앱을 비활성화할 수 없는 경우
         if j < cost:
             dp[i][j] = dp[i-1][j]

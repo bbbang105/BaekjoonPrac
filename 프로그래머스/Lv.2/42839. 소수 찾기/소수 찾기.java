@@ -6,7 +6,7 @@ class Solution {
     public int solution(String numbers) {
         int answer = 0;
         // 모든 숫자 조합 생성
-        createNewNumber("", numbers);
+        createNumberSet("", numbers);
         // 동적 할당을 위한 최대 숫자 생성
         int maxNum = createMaxNumber(numbers);
         // 에라토스테네스의 체 사용
@@ -22,13 +22,13 @@ class Solution {
     }
 
     // 숫자 조합을 만드는 메소드
-    private void createNewNumber(String comb, String other) {
+    private void createNumberSet(String comb, String other) {
         if (!comb.equals("")) {
             numberSet.add(Integer.parseInt(comb));
         }
 
         for (int i = 0; i < other.length(); i++) {
-            createNewNumber(comb + other.charAt(i), other.substring(0,i) + other.substring(i+1));
+            createNumberSet(comb + other.charAt(i), other.substring(0,i) + other.substring(i+1));
         }
     }
 
@@ -46,10 +46,8 @@ class Solution {
     private void isPrime(int n) {
         isPrimeCheck = new boolean[n+1]; // 배열 동적 할당
 
-        for (int i = 0; i < isPrimeCheck.length; i++) {
-            // 전부 true로 변경해줌
-            isPrimeCheck[i] = true;
-        }
+        // 전부 true로 변경해줌
+        Arrays.fill(isPrimeCheck, true);
 
         isPrimeCheck[0] = isPrimeCheck[1] = false; // 0과 1은 소수가 아님
 
@@ -63,5 +61,4 @@ class Solution {
             }
         }
     }
-
 }

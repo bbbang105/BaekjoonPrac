@@ -7,11 +7,7 @@ class Solution {
         
         while (right <= number + 1) {
             if (sum <= number) {
-                if (sum == number) {
-                    System.out.println(left);
-                    System.out.println(right);
-                    answer++;
-                }
+                if (sum == number) answer++;
                 sum += right;
                 right++;
             } else {

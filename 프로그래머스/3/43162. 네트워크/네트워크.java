@@ -1,39 +1,34 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 class Solution {
-    int[][] graph;
-    boolean[] visited;
-    int network;
-    int len;
+    private int[] parent;
+    
     public int solution(int n, int[][] computers) {
-        graph = computers;
-        visited = new boolean[n];
-        network = 0;
-        len = n;
-        for (int i = 0; i < len; i++) {
-            if (!visited[i]) {
-                bfs(i);
-                network++;
-            }
-        }
-
-        return network;
-    }
-
-    private void bfs(int num) {
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(num);
-        visited[num] = true;
-        while (!q.isEmpty()) {
-            int cur = q.poll();
-            for (int next = 0; next < len; next++) {
-                if (cur == next) continue;
-                if (graph[cur][next] == 1 && !visited[next]) {
-                    visited[next] = true;
-                    q.offer(next);
+        parent = new int[n];
+        for (int i = 0; i < n; i++) parent[i] = i;
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j && computers[i][j] == 1) {
+                    if (find(i) != find(j)) union(i, j);
                 }
             }
         }
+        
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            // 본인이 부모 노드인 경우에는 그룹 +1
+            if (parent[i] == i) result++;
+        }
+        
+        return result;
+    }
+    
+    private int find(int a) {
+        if (parent[a] == a) return a;
+        else return parent[a] = find(parent[a]);
+    }
+    
+    private void union(int a, int b) {
+        int A = find(a); int B = find(b);
+        if (A != B) parent[B] = A;
     }
 }

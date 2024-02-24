@@ -1,7 +1,7 @@
 import java.util.*;
 
 class Solution {
-    private static List<List<int[]>> graph;
+    private static List<List<Node>> graph;
     private static int[] dist;
     private static final int START = 1;
     private static final int INF = Integer.MAX_VALUE;
@@ -13,8 +13,8 @@ class Solution {
         
         for (int[] road : roads) {
             int a = road[0]; int b = road[1]; int w = road[2];
-            graph.get(a).add(new int[]{b, w});
-            graph.get(b).add(new int[]{a, w});
+            graph.get(a).add(new Node(b, w));
+            graph.get(b).add(new Node(a, w));
         }
         
         dist = new int[N + 1];
@@ -32,22 +32,31 @@ class Solution {
     }
     
     private void dijkstra() {
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{START, 0});
+        Queue<Integer> q = new LinkedList<>();
+        q.add(START);
         
         while (!q.isEmpty()) {
-            int[] temp = q.poll();
-            int cur = temp[0]; int curWeight = temp[1];
+            int cur = q.poll();
             
             for (int i = 0; i < graph.get(cur).size(); i++) {
-                int[] t = graph.get(cur).get(i);
-                int next = t[0]; int nextWeight = t[1];
+                Node node = graph.get(cur).get(i);
+                int next = node.vertex; int nextWeight = node.weight;
                 
                 if (dist[cur] + nextWeight < dist[next]) {
                     dist[next] = dist[cur] + nextWeight;
-                    q.offer(new int[]{next, nextWeight});
+                    q.offer(next);
                 }
             }
+        }
+    }
+    
+    class Node {
+        int vertex;
+        int weight;
+        
+        Node(int vertex, int weight) {
+            this.vertex = vertex;
+            this.weight = weight;
         }
     }
 }

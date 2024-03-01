@@ -1,5 +1,5 @@
 class Solution {
-    private int[] parent;
+    private static int[] parent;
     
     public int solution(int n, int[][] computers) {
         parent = new int[n];
@@ -13,22 +13,23 @@ class Solution {
             }
         }
         
-        int result = 0;
+        int answer = 0;
         for (int i = 0; i < n; i++) {
-            // 본인이 부모 노드인 경우에는 그룹 +1
-            if (parent[i] == i) result++;
+            if (parent[i] == i) answer++;
         }
         
-        return result;
-    }
-    
-    private int find(int a) {
-        if (parent[a] == a) return a;
-        else return parent[a] = find(parent[a]);
+        return answer;
     }
     
     private void union(int a, int b) {
-        int A = find(a); int B = find(b);
-        if (A != B) parent[B] = A;
+        int pa = find(a);
+        int pb = find(b);
+        
+        if (pa != pb) parent[pb] = pa;
+    }
+    
+    private int find(int n) {
+        if (parent[n] == n) return n;
+        else return parent[n] = find(parent[n]);
     }
 }

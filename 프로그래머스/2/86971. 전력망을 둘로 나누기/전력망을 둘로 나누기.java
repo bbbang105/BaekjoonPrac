@@ -20,15 +20,18 @@ class Solution {
             int a = wire[0]; int b = wire[1];
             map.get(a).remove(Integer.valueOf(b));
             map.get(b).remove(Integer.valueOf(a));
-            
-            List<Integer> groupCnt = new ArrayList<>();
+            int groupCnt = 0;
+        
             for (int i = 1; i < n + 1; i++) {
                 if (!visited[i]) {
-                    groupCnt.add(bfs(i));
+                    groupCnt = bfs(i);
+                    break;
                 }
             }
             
-            answer = Math.min(answer, Math.abs(groupCnt.get(0) - groupCnt.get(1)));
+            int anotherGroupCnt = n - groupCnt;
+            
+            answer = Math.min(answer, Math.abs(groupCnt - anotherGroupCnt));
             map.get(a).add(b);
             map.get(b).add(a);
         }

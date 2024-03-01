@@ -1,45 +1,43 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 class Solution {
-    public static Integer[] solution(int[] progresses, int[] speeds) {
+    public int[] solution(int[] progresses, int[] speeds) {
+        Stack<Task> stk = new Stack<>();
         List<Integer> answer = new ArrayList<>();
-        Stack<Integer> need_days = new Stack<>();
-        // 뒤쪽 작업부터 스택에 넣음
-        for (int i = progresses.length-1; i >= 0; i--) {
-            int per_remain = progresses[i];
-            int per_speed = speeds[i];
-            int per_need_day = cal_remain(per_remain, per_speed);
-            need_days.push(per_need_day);
+        
+        for (int i = progresses.length - 1; i >= 0; i--) {
+            stk.push(new Task(progresses[i], speeds[i]));
         }
-        int pre = need_days.pop();
-        int cnt = 1;
-        while (!need_days.isEmpty()) {
-            int cur = need_days.pop();
-            if (pre < cur) {
-                answer.add(cnt);
-                pre = cur;
-                cnt = 0;
+        
+        int day = 0;
+        while (!stk.isEmpty()) {
+            Task task = stk.pop();
+            int progress = task.progress; int speed = task.speed;
+            
+            int remain = (100 - (progress + day * speed)) / speed;
+            if ((100 - (progress + day * speed)) % speed != 0) remain++;
+            day += remain;
+                
+            int cnt = 1;
+            while (!stk.isEmpty()) {
+                if (stk.peek().progress + (stk.peek().speed * day) < 100) break;
+                stk.pop();
+                cnt++;
             }
-            cnt ++;
+            
+            answer.add(cnt);
         }
-        answer.add(cnt);
-
-        return answer.toArray(new Integer[0]);
+        
+        return answer.stream().mapToInt(Integer::intValue).toArray();
     }
-
-    public static int cal_remain(int r, int s) {
-        int need_day = 0;
-        while (r < 100) {
-            r += s;
-            need_day++;
+    
+    class Task {
+        int progress;
+        int speed;
+        
+        Task(int progress, int speed) {
+            this.progress = progress;
+            this.speed = speed;
         }
-        return need_day;
-    }
-
-    public static void main(String args[]) {
-        System.out.println(Arrays.toString(solution(new int[]{90, 98, 97, 96, 98}, new int[]{1, 1, 1, 1, 1})));
     }
 }

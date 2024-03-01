@@ -1,31 +1,31 @@
 class Solution {
-    static boolean[] visited;
-    static int answer = 0;
+    private static boolean[] visited;
+    private static int[][] board;
+    private static int answer;
 
-    public static int solution(int health, int[][] dungeons) {
+    public int solution(int k, int[][] dungeons) {
         visited = new boolean[dungeons.length];
-        adventure(health, dungeons, 0);
+        board = dungeons;
+        answer = 0;
+        adventure(k, 0);
+        
         return answer;
     }
-
-    private static void adventure(int curHealth, int[][] dungeons, int clearCount) {
-        answer = Math.max(answer, clearCount);
-
-        for (int i = 0; i < dungeons.length; i++) {
+    
+    private void adventure(int health, int cnt) {
+        answer = Math.max(answer, cnt);
+        
+        for (int i = 0; i < board.length; i++) {
             if (!visited[i]) {
-                int atLeast = dungeons[i][0];
-                int consumption = dungeons[i][1];
-
-                if (curHealth >= atLeast) {
+                int need = board[i][0];
+                int consume = board[i][1];
+                
+                if (health >= need) {
                     visited[i] = true;
-                    adventure(curHealth - consumption, dungeons, clearCount + 1);
+                    adventure(health - consume, cnt + 1);
                     visited[i] = false;
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(solution(80, new int[][]{{80, 20}, {50, 40}, {30, 10}}));
     }
 }

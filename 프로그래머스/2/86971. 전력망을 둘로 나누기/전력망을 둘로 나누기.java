@@ -1,50 +1,62 @@
-import java.util.ArrayList;
+import java.util.*;
 
-class Solution {
-    private int oneGroupCnt;
-
+class Solution {  
+    private static Map<Integer, List<Integer>> map = new HashMap<>();
+    private static boolean[] visited;
+    
     public int solution(int n, int[][] wires) {
-        int answer = 10000000;
-
-        for (int i = 0; i < wires.length; i++) {
-            ArrayList<Integer>[] graph = new ArrayList[n+1];
-            graphInit(wires, graph, i);
-
-            boolean[] visited = new boolean[n+1];
-            oneGroupCnt = 1;
-            dfs(graph, visited, i+1);
-            int anotherGroupCnt = n - oneGroupCnt;  // 다른 한 그룹의 노드 개수
-            answer = Math.min(answer, Math.abs(oneGroupCnt - anotherGroupCnt));
+        
+        for (int i = 1; i < n + 1; i++) map.put(i, new ArrayList<>());
+        for (int[] wire : wires) {
+            int v = wire[0]; int e = wire[1];
+            map.get(v).add(e);
+            map.get(e).add(v);
+        }
+        
+        int answer = 100;
+        
+        for (int[] wire : wires) {
+            visited = new boolean[n + 1];
+            int a = wire[0]; int b = wire[1];
+            map.get(a).remove(Integer.valueOf(b));
+            map.get(b).remove(Integer.valueOf(a));
+            
+            List<Integer> groupCnt = new ArrayList<>();
+            for (int i = 1; i < n + 1; i++) {
+                if (!visited[i]) {
+                    groupCnt.add(bfs(i));
+                }
+            }
+            
+            answer = Math.min(answer, Math.abs(groupCnt.get(0) - groupCnt.get(1)));
+            map.get(a).add(b);
+            map.get(b).add(a);
         }
 
         return answer;
     }
+    
+    private int bfs(int start) {
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(start);
+        visited[start] = true;
+        int cnt = 1;
 
-    private void dfs(ArrayList<Integer>[] graph, boolean[] visited, int now) {
-        visited[now] = true;
-
-        for (int next : graph[now]) {
-
-            if (!visited[next]) {
-                oneGroupCnt++;
-                dfs(graph, visited, next);
+        while(!q.isEmpty()) {
+            int n = q.poll();
+            
+            if (!map.get(n).isEmpty()) {
+                for (int i = 0; i < map.get(n).size(); i++) {
+                    int next = map.get(n).get(i);
+                    if (!visited[next]) {
+                        q.offer(next);
+                        visited[next] = true;
+                        cnt++;
+                    }
+                }
             }
         }
-    }
-
-    private void graphInit(int[][] wires, ArrayList<Integer>[] graph, int cutIndex) {
-        for (int k = 0; k < graph.length; k++) {
-            // 모든 원소 ArrayList로 초기화
-            graph[k] = new ArrayList<>();
-        }
-
-        for (int j = 0; j < wires.length; j++) {
-            if (j == cutIndex) continue;
-
-            int startNode = wires[j][0];
-            int endNode = wires[j][1];
-            graph[startNode].add(endNode);
-            graph[endNode].add(startNode);
-        }
+        
+        return cnt;
     }
 }

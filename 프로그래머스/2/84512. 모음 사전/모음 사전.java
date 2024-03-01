@@ -1,35 +1,37 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-    final static String[] vowels = {"A", "E", "I", "O", "U"};
-    static List<String> words = new ArrayList<>();
-    static int answer = 0;
-    static boolean flag = false;
-
-    public static int solution(String word) {
-        findWord(word, "");
+    private static List<String> words = new ArrayList<>();
+    private static String[] vowels = {"A", "E", "I", "O", "U"};
+    private static String goal;
+    private static int answer = 0;
+    private static boolean flag = false;
+    
+    public int solution(String w) {
+        goal = w;
+        backTracking("");
+        
         return answer;
     }
-
-    private static void findWord(String target, String curWord) {
-        if (curWord.equals(target)) {
+    
+    private void backTracking(String word) {
+        if (word.equals(goal)) {
             flag = true;
-
+            
             return;
         }
-
+        
         if (!flag) {
-            if (!words.contains(curWord)) {
-                words.add(curWord);
+            if (!words.contains(word)) {
+                words.add(word);
                 answer++;
             }
-
+            
             for (String vowel : vowels) {
-                String newWord = curWord + vowel;
-
+                String newWord = word + vowel;
+                
                 if (newWord.length() <= 5) {
-                    findWord(target, newWord);
+                    backTracking(newWord);
                 }
             }
         }

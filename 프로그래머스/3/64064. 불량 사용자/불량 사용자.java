@@ -15,22 +15,14 @@ class Solution {
         limit = banned_id.length;
         
         for (String b : banned_id) {
-            StringBuilder PATTERN = new StringBuilder();
             List<String> list = new ArrayList<>();
             
             // 패턴 생성
-            for (int i = 0; i < b.length(); i++) {
-                if (b.charAt(i) == '*') {
-                    // 와일드카드 추가
-                    PATTERN.append("[a-z0-9]");
-                } else {
-                    PATTERN.append(b.charAt(i));
-                }
-            }
+            String PATTERN = b.replace("*", "[a-z0-9]");
             
             // 가능한 아이디 추가
             for (String u : user_id) {
-                if (Pattern.matches(PATTERN.toString(), u)) {
+                if (Pattern.matches(PATTERN, u)) {
                     list.add(u);
                 }
             }

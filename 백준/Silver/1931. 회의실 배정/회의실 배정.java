@@ -20,10 +20,16 @@ public class Main {
             timeTable.add(time);
         }
 
-        // 시작 시간 기준, 오름차순 정렬
-        Collections.sort(timeTable, (o1, o2) -> o1[0] - o2[0]);
-        // 종료 시간 기준, 오름차순 정렬
-        Collections.sort(timeTable, (o1, o2) -> o1[1] - o2[1]);
+        Collections.sort(timeTable, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if (o1[1] != o2[1]) {
+                    return o1[1] - o2[1]; // 종료 시간을 기준으로 오름차순 정렬
+                } else {
+                    return o1[0] - o2[0]; // 시작 시간을 기준으로 오름차순 정렬
+                }
+            }
+        });
 
         /* 리스트 원소 확인용
         for (int[] t : timeTable) {
@@ -41,7 +47,7 @@ public class Main {
                 // 새로운 회의를 시작할 수 있는 경우
                 lastEndTime = curEndTime;
                 cnt++;
-                
+
                 // System.out.println("START : " + curStartTime + " END : " + curEndTime);
             }
         }

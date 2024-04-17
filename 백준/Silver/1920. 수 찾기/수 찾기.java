@@ -1,39 +1,67 @@
 import java.io.*;
 import java.util.*;
 
-import static java.util.Collections.binarySearch;
-
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int N = Integer.parseInt(br.readLine());
+        int[] nums = new int[N];
+
         StringTokenizer st = new StringTokenizer(br.readLine());
-
-        List<Integer> A = new ArrayList<>();
-
-        while (st.hasMoreTokens()) {
-            A.add(Integer.parseInt(st.nextToken()));
+        for (int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
         }
-
-        Collections.sort(A);
+        Arrays.sort(nums); // 정렬
 
         int M = Integer.parseInt(br.readLine());
-        StringTokenizer st2 = new StringTokenizer(br.readLine());
+        st = new StringTokenizer(br.readLine());
+
         StringBuilder sb = new StringBuilder();
+        int start = nums[0];
+        int end = nums[N - 1];
 
-        while (st2.hasMoreTokens()) {
-            int num = Integer.parseInt(st2.nextToken());
+        for (int i = 0; i < M; i++) {
+            int goal = Integer.parseInt(st.nextToken());
 
-            int id = binarySearch(A, num); // 있다면 0이상
+            if (goal > end || goal < start) {
+                // 범위를 넘는 경우
+                sb.append(0).append('\n');
+                continue;
+            }
 
-            if (id >= 0) {
+            boolean isExist = binarySearch(nums, goal); // T or F
+            if (isExist) {
+                // 존재하는 경우
                 sb.append(1).append('\n');
             } else {
+                // 존재하지 않는 경우
                 sb.append(0).append('\n');
             }
         }
 
-        System.out.println(sb.toString());
+        System.out.println(sb);
+    }
+
+    private static boolean binarySearch(int[] nums, int goal) {
+        int low = 0;
+        int high = nums.length - 1;
+        int mid;
+        while (low <= high) {
+            mid = (low + high) / 2;
+            int n = nums[mid];
+
+            if (n == goal) {
+                return true;
+            }
+
+            if (n > goal) {
+                high = mid - 1;
+            } else if (n < goal) {
+                low = mid + 1;
+            }
+        }
+
+        return false;
     }
 }

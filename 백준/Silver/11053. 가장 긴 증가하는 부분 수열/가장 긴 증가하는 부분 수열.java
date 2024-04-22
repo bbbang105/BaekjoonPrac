@@ -1,0 +1,41 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int N = Integer.parseInt(br.readLine());
+        int[] arr = new int[N];
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        int[] dp = new int[N];
+        Arrays.fill(dp, 1); // 최소 길이 1로 초기화
+
+        for (int i = 0; i < N; i++) {
+            int cur = arr[i];
+            for (int j = i + 1; j < N; j++) {
+                int next = arr[j];
+
+                // 더 길어지는 경우에만 갱신
+                if (next > cur && dp[j] <= dp[i]) {
+                    dp[j] = dp[i] + 1;
+                }
+            }
+        }
+
+        // 최대 길이 찾기
+        int maxLength = 0;
+        for (int i = 0; i < N; i++) {
+            if (dp[i] > maxLength) {
+                maxLength = dp[i];
+            }
+        }
+
+        System.out.println(maxLength);
+    }
+}

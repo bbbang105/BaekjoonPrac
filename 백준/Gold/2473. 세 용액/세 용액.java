@@ -13,7 +13,6 @@ public class Main {
         }
         Arrays.sort(liquids);
         long[] result = findThreeLiquids(liquids, N);
-        Arrays.sort(result);
         StringBuilder sb = new StringBuilder();
         for (long n : result) {
             sb.append(n).append(" ");
@@ -24,21 +23,12 @@ public class Main {
     private static long[] findThreeLiquids(long[] liquids, int N) {
         long minSum = Long.MAX_VALUE;
         long[] result = new long[3];
-        for (int k = 0; k < N; k++) {
+        for (int k = 0; k < N - 2; k++) {
             long fixLiquid = liquids[k];
-
-            int left = 0;
+            int left = k + 1;
             int right = N - 1;
-            while (left < right) {
-                if (left == k) {
-                    left++;
-                    continue;
-                }
-                if (right == k) {
-                    right--;
-                    continue;
-                }
 
+            while (left < right) {
                 long sum = fixLiquid + liquids[left] + liquids[right];
                 if (minSum > Math.abs(sum)) {
                     minSum = Math.abs(sum);

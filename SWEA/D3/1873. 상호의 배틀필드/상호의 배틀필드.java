@@ -121,7 +121,7 @@ public class Solution {
 	}
 	
 	/**
-	 * 탱크 머리를 위쪽으로 돌리고 아래가 평지라면 이동하는 메서드.
+	 * 탱크 머리를 아래쪽으로 돌리고 아래가 평지라면 이동하는 메서드.
 	 * 
 	 */
 	private static void goToDown() {

@@ -3,6 +3,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+/**
+ * [조건]
+ * 1. 높이 H와 너비 W는 2이상 20이하이다.
+ * 2. 넣을 입력의 개수 N은 0이상 100이하이다.
+ * 3. 전차는 맵 밖으로는 이동할 수 없다.
+ * 4. 포탄이 벽돌 벽에 부딪히면 벽이 부서지고 평지가 된다.
+ * 5. 벽돌 벽이 아닌 강철 벽에 부딪히면 포탄이 멈춘다.
+ * 6. 전차는 평지로만 이동할 수 있다. 이동하지 않는 경우더라도 전차 머리는 돌아간다.
+ * 7. 초기 게임 맵과 사용자가 넣을 입력이 순서대로 주어질 때, 모든 입력을 처리한 후 맵의 상태를 출력하라.
+ */
 public class Solution {
 	
 	private static final int[] DX = {-1, 1, 0, 0};

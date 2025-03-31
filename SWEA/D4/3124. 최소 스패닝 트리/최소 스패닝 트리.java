@@ -1,9 +1,20 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
+/**
+ * [조건]
+ * 1. 정점의 개수 V는 1이상 100,000 이하이다.
+ * 2. 간선의 개수 E는 1이상 200,000 이하이다.
+ * 3. 가중치 C는 음수일 수 있으며, 절대값이 1,000,000을 넘지 않는다.
+ * 
+ * [풀이]
+ * 1. 프림 알고리즘을 활용한다.
+ */
 public class Solution {
 	
 	private static BufferedReader br;
@@ -12,8 +23,8 @@ public class Solution {
 	
 	private static int counfOfVertexs;
 	private static int counfOfEdges;
-	private static Edge[] edges;
-	private static int[] parents;
+	private static boolean[] isVisited;
+	private static List<Edge>[] graph;
 	private static long result;
 	
 	public static void main(String[] args) throws IOException {
@@ -22,27 +33,37 @@ public class Solution {
 		int testCaseNum = Integer.parseInt(br.readLine());
 		for (int testCase = 1; testCase <= testCaseNum; testCase++) {
 			init();
-			findResult();
+			prim();
 			sb.append("#").append(testCase).append(" ").append(result).append('\n');
 		}
 		System.out.println(sb);
 	}
 	
 	/**
-	 * 결과를 도출하는 메서드.
+	 * 프림 알고리즘을 통해 결과를 도출하는 메서드.
 	 */
-	private static void findResult() {
-		int from, to, weight, fromParent, toParent;
-		for (Edge edge : edges) {
-			from = edge.from;
-			to = edge.to;
+	private static void prim() {
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.offer(new Edge(1, 0));
+		
+		Edge edge;
+		int cur, weight;
+		while (!pq.isEmpty()) {
+			edge = pq.poll();
+			cur = edge.vertex;
 			weight = edge.weight;
 			
-			fromParent = find(from);
-			toParent = find(to);
-			if (fromParent != toParent) {
-				result += weight;
-				union(fromParent, toParent);
+			if (isVisited[cur]) {
+				continue;
+			}
+			
+			isVisited[cur] = true;
+			result += weight;
+			
+			for (Edge next : graph[cur]) {
+				if (!isVisited[next.vertex]) {
+					pq.offer(next);
+				}
 			}
 		}
 	}
@@ -55,51 +76,32 @@ public class Solution {
 		st = new StringTokenizer(br.readLine());
 		counfOfVertexs = Integer.parseInt(st.nextToken());
 		counfOfEdges = Integer.parseInt(st.nextToken());
-		edges = new Edge[counfOfEdges];
+		graph = new ArrayList[counfOfVertexs + 1];
+		for (int index = 1; index <= counfOfVertexs; index++) {
+			graph[index] = new ArrayList<>();
+		}
+		isVisited = new boolean[counfOfVertexs + 1];
 		int from, to, weight;
 		for (int index = 0; index < counfOfEdges; index++) {
 			st = new StringTokenizer(br.readLine());
 			from = Integer.parseInt(st.nextToken());
 			to = Integer.parseInt(st.nextToken());
 			weight = Integer.parseInt(st.nextToken());
-			edges[index] = new Edge(from, to, weight);
-		}
-		Arrays.sort(edges);
-		
-		parents = new int[counfOfVertexs + 1];
-		for (int index = 1; index <= counfOfVertexs; index++) {
-			parents[index] = index;
+			graph[from].add(new Edge(to, weight));
+			graph[to].add(new Edge(from, weight));
 		}
 	}
 	
 	/**
-	 * Union 연산
-	 */
-	private static void union(int aParent, int bParent) {
-		parents[bParent] = aParent;
-	}
-	
-	/**
-	 * Find 연산
-	 */
-	private static int find(int num) {
-		if (parents[num] == num) {
-			return num;
-		}
-		return parents[num] = find(parents[num]);
-	}
-	
-	/**
-	 * 연결 정보를 담는 클래스. 
+	 * 간선 정보를 담은 클래스.
+	 * 가중치를 기준으로 오름차순 정렬한다.
 	 */
 	static class Edge implements Comparable<Edge> {
-		int from;
-		int to;
+		int vertex;
 		int weight;
 		
-		Edge(int from, int to, int weight) {
-			this.from = from;
-			this.to = to;
+		Edge(int vertex, int weight) {
+			this.vertex = vertex;
 			this.weight = weight;
 		}
 

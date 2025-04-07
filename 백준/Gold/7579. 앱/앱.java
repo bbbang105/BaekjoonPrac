@@ -13,13 +13,15 @@ import java.util.StringTokenizer;
  * [풀이]
  * 1. 냅색 알고리즘을 활용한다.
  * 2. 담을 수 있는 메모리(무게)가 아닌, 비용을 기준으로 고려한다.
+ * 3. 중복 선택을 방지하기 위해 뒤에서부터 1차원 dp 배열을 갱신한다.
+ * 4. 확보 가능한 메모리가 M 이상인 경우 중 최소 비용을 찾는다.
  */
 public class Main {
 	
 	private static int countOfApps;
 	private static int atLeast;
 	private static int[][] apps;
-	private static int[][] dp;
+	private static int[] dp;
 	private static int result;
 	private static int sum;
 	
@@ -43,23 +45,17 @@ public class Main {
 		for (int index = 1; index <= countOfApps; index++) {
 			memory = apps[index][0];
 			cost = apps[index][1];
-			
-			for (int availableCost = 0; availableCost <= sum; availableCost++) {
-				if (availableCost < cost) {
-					// 1. 현재 사용 가능한 cost로 현재 앱을 비활성화 할 수 없을 때
-					// 이전 최적해를 그대로 가져옴
-					dp[index][availableCost] = dp[index - 1][availableCost];
-				} else {
-					// 2. 현재 사용 가능한 cost로 현재 앱을 비활성화 할 수 있을 때
-					// 2-1. 현재 앱을 비활성화 하지 않는 경우 vs
-					// 2-2. 현재 앱을 비활성화 하는 경우 (현재 확보 가능한 memory + 남은 cost로 얻을 수 있는 최적해)
-					dp[index][availableCost] = Math.max(dp[index - 1][availableCost], memory + dp[index - 1][availableCost - cost]);
-				}
-				
-				if (dp[index][availableCost] >= atLeast) {
-					// 메모리를 확보한 경우, 최소값으로 갱신
-					result = Math.min(result, availableCost);
-				}
+
+			// 뒤에서부터 갱신하여 중복 선택 방지
+			for (int availableCost = sum; availableCost >= cost; availableCost--) {
+				dp[availableCost] = Math.max(dp[availableCost], dp[availableCost - cost] + memory);
+			}
+		}
+
+		// 확보 가능한 메모리가 M 이상인 경우 중 최소 비용을 찾는다.
+		for (int availableCost = 0; availableCost <= sum; availableCost++) {
+			if (dp[availableCost] >= atLeast) {
+				result = Math.min(result, availableCost);
 			}
 		}
 	}
@@ -76,18 +72,17 @@ public class Main {
 		apps = new int[countOfApps + 1][2];
 		
 		st = new StringTokenizer(br.readLine());
-		int curNum;
 		for (int index = 1; index <= countOfApps; index++) {
-			apps[index][0] = Integer.parseInt(st.nextToken());
+			apps[index][0] = Integer.parseInt(st.nextToken()); // 메모리
 		}
 		
 		sum = 0;
 		st = new StringTokenizer(br.readLine());
 		for (int index = 1; index <= countOfApps; index++) {
-			curNum = Integer.parseInt(st.nextToken());
-			sum += curNum;
-			apps[index][1] = curNum;
+			int curCost = Integer.parseInt(st.nextToken());
+			sum += curCost;
+			apps[index][1] = curCost;
 		}
-		dp = new int[countOfApps + 1][sum + 1]; // 모든 앱을 꺼야하는 경우까지 고려
+		dp = new int[sum + 1]; // 비용에 따른 최대 메모리 확보값
 	}
 }

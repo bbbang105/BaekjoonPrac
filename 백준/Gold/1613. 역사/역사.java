@@ -19,8 +19,6 @@ import java.util.StringTokenizer;
  */
 public class Main {
 	
-	private static final int INF = 401;
-	
 	private static int countOfNodes;
 	private static int countOfEdges;
 	private static int[][] dp;
@@ -85,16 +83,6 @@ public class Main {
 		countOfNodes = Integer.parseInt(st.nextToken());
 		countOfEdges = Integer.parseInt(st.nextToken());
 		dp = new int[countOfNodes + 1][countOfNodes + 1];
-		
-		for (int rowIndex = 1; rowIndex <= countOfNodes; rowIndex++) {
-			for (int colIndex = 1; colIndex <= countOfNodes; colIndex++) {
-				if (rowIndex == colIndex) {
-					dp[rowIndex][colIndex] = 0;
-				} else {
-					dp[rowIndex][colIndex] = INF;
-				}
-			}
-		}
 		
 		int from, to;
 		for (int index = 0; index < countOfEdges; index++) {

@@ -1,32 +1,58 @@
 import java.util.*;
+import java.io.*;
 
 class Solution {
     public int solution(int[][] jobs) {
-        Arrays.sort(jobs, (o1, o2) -> o1[0] - o2[0]);
-
-        Queue<int[]> q = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]); // 작업 소요 시간을 기준으로 우선순위 큐 설정
-        int time = 0; // 현재 시간
-        int index = 0; // jobs 배열의 인덱스
         int answer = 0;
+        PriorityQueue<Job> pq = new PriorityQueue<>();
+        Arrays.sort(jobs, (o1, o2) -> o1[0] - o2[0]);
         
-        while (!q.isEmpty() || index < jobs.length) {
-            // 현재 시간까지 요청된 작업을 우선순위 큐에 추가
-            while (index < jobs.length && jobs[index][0] <= time) {
-                q.offer(jobs[index]);
+        int curTime = 0; // 현재 시간
+        int index = 0;   // 현재 인덱스
+        int perTime = 0; // 작업 반환 시간
+        Job curJob;
+        
+        while (index < jobs.length || !pq.isEmpty()) {
+            while (index < jobs.length && jobs[index][0] <= curTime) {
+                // 현재 시간까지 요청 가능한 작업들을 모두 우선순위 큐에 추가
+                pq.offer(new Job(jobs[index][0], jobs[index][1], index));
                 index++;
             }
             
-            // 우선순위 큐에서 가장 소요 시간이 짧은 작업을 꺼내 처리
-            if (!q.isEmpty()) {
-                int[] job = q.poll();
-                answer += time - job[0] + job[1]; // 현재 시간에서 작업이 요청된 시간을 빼고 작업 소요 시간을 더함
-                time += job[1]; // 현재 시간 업데이트
+            if (!pq.isEmpty()) {
+                // 1. 큐가 비어있지 않은 경우 -> 작업을 꺼내 처리함
+                curJob = pq.poll();
+                perTime = (curTime + curJob.spendTime) - curJob.requestTime; // 최종 종료 시간 - 최초 요청 시간 == 각 작업 반환 시간
+                curTime += curJob.spendTime; // 현재 시각 업데이트
+                answer += perTime;
             } else {
-                // 우선순위 큐가 비어있을 경우 다음 작업의 시작 시간까지 시간을 더함
-                time = jobs[index][0];
+                // 2. 큐가 비어있는 경우 -> 다음 작업 요청 시간으로 바로 이동
+                curTime = jobs[index][0];
             }
         }
-
-        return answer / jobs.length;
+        return (int) answer / jobs.length;
+    }
+    
+    static class Job implements Comparable<Job> {
+        int requestTime;
+        int spendTime;
+        int index;
+        
+        Job(int requestTime, int spendTime, int index) {
+            this.requestTime = requestTime;
+            this.spendTime = spendTime;
+            this.index = index;
+        }
+        
+        @Override
+        public int compareTo(Job j) {
+            if (this.spendTime == j.spendTime) {
+                if (this.requestTime == j.requestTime) {
+                    return this.index - j.index;
+                }
+                return this.requestTime - j.requestTime;
+            }
+            return this.spendTime - j.spendTime;
+        }
     }
 }

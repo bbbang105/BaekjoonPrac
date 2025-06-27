@@ -1,65 +1,56 @@
 import java.util.*;
 
-class Solution {  
-    private static Map<Integer, List<Integer>> map = new HashMap<>();
+class Solution {
+    
+    private static Map<Integer, List<Integer>> map;
     private static boolean[] visited;
     
     public int solution(int n, int[][] wires) {
+        map = new HashMap<>();
         
-        for (int i = 1; i < n + 1; i++) map.put(i, new ArrayList<>());
-        for (int[] wire : wires) {
-            int v = wire[0]; int e = wire[1];
-            map.get(v).add(e);
-            map.get(e).add(v);
+        // 맵 구성
+        for (int i = 1; i <= n; i++) {
+            map.put(i, new ArrayList<>());
         }
-        
-        int answer = 100;
-        
+        int a, b;
         for (int[] wire : wires) {
-            visited = new boolean[n + 1];
-            int a = wire[0]; int b = wire[1];
-            map.get(a).remove(Integer.valueOf(b));
-            map.get(b).remove(Integer.valueOf(a));
-            int groupCnt = 0;
-        
-            for (int i = 1; i < n + 1; i++) {
-                if (!visited[i]) {
-                    groupCnt = bfs(i);
-                    break;
-                }
-            }
-            
-            int anotherGroupCnt = n - groupCnt;
-            
-            answer = Math.min(answer, Math.abs(groupCnt - anotherGroupCnt));
+            a = wire[0];
+            b = wire[1];
             map.get(a).add(b);
             map.get(b).add(a);
         }
-
+        // BFS로 탐색
+        int answer = n;
+        for (int[] wire : wires) {
+            visited = new boolean[n + 1];
+            int aGroupCount = bfs(wire[0], wire[1]);
+            int bGroupCount = n - aGroupCount;
+            answer = Math.min(answer, Math.abs(aGroupCount - bGroupCount));
+        }
+        
         return answer;
     }
     
-    private int bfs(int start) {
+    private static int bfs(int a, int b) {
+        int count = 1;
         Queue<Integer> q = new LinkedList<>();
-        q.offer(start);
-        visited[start] = true;
-        int cnt = 1;
-
-        while(!q.isEmpty()) {
-            int n = q.poll();
-            
-            if (!map.get(n).isEmpty()) {
-                for (int i = 0; i < map.get(n).size(); i++) {
-                    int next = map.get(n).get(i);
-                    if (!visited[next]) {
-                        q.offer(next);
-                        visited[next] = true;
-                        cnt++;
-                    }
-                }
+        q.offer(a);
+        
+        while (!q.isEmpty()) {
+            int cur = q.poll();
+            if (visited[cur]) {
+                continue;
             }
+            visited[cur] = true;
+            
+            for (int next : map.get(cur)) {
+                if (next != b && !visited[next]) {
+                    count++;
+                    q.offer(next);
+                }
+            }            
         }
         
-        return cnt;
+        return count;
     }
 }

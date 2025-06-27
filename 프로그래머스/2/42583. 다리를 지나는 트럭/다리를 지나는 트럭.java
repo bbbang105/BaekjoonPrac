@@ -1,36 +1,36 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-    public static int solution(int bridgeLength, int bridgeWeight, int[] truckWeights) {
-        int curWeight = 0, index = 0, time = 0; // 현재 다리에 올라간 차량들의 무게, 현재 차량 인덱스, 소요 시간
+    public int solution(int bridge_length, int weight, int[] truck_weights) {
+        int curWeight = 0;
+        int index = 0;
+        int time = 0;
         Queue<Integer> q = new LinkedList<>();
         q.offer(0);
-
+        
         while (true) {
-            if (q.size() == bridgeLength) {
-                // 다리에서 빠져나온 경우 -
-                curWeight -= q.poll();
-            }
-
-            if (index < truckWeights.length) {
-                if (bridgeWeight >= curWeight + truckWeights[index]) {
-                    // 차량이 다리 위에 올라가는 경우
-                    q.offer(truckWeights[index]);
-                    curWeight += truckWeights[index++];
+            if (index < truck_weights.length) {
+                // 다리에서 트럭이 내리는 경우
+                if (q.size() == bridge_length) {
+                    curWeight -= q.poll();
+                }
+                if (weight >= curWeight + truck_weights[index]) {
+                    // 1. 새로운 트럭을 올릴 수 있는 경우
+                    curWeight += truck_weights[index];
+                    q.offer(truck_weights[index]);
+                    index++;
                 } else {
-                    // 올라가지 못하면 0을 삽입
+                    // 2. 무게가 부족해 트럭을 올릴 수 없는 경우
                     q.offer(0);
                 }
             } else {
-                // 마지막 차량까지 다리 위에 올라간 경우
-                time += bridgeLength; // 다리 길이만큼 이동해야 하므로 +
+                // 마지막 트럭인 경우
+                time += bridge_length;
                 break;
             }
-            // + 1초
             time++;
         }
-
-        return time; // 시간을 더하지 않고 종료했으므로, 처음 큐에 0을 넣어준 것에 대해서 -1을 진행하지 않음
+        
+        return time;
     }
 }

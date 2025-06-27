@@ -1,24 +1,22 @@
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
     public int solution(int[] people, int limit) {
         Arrays.sort(people);
-        
         int left = 0;
         int right = people.length - 1;
-        int save = 0;
         
+        int saveCount = 0;
         while (left < right) {
-            int weight = people[left] + people[right];
-            
-            if (weight <= limit) {
+            if (people[left] + people[right] <= limit) {
+                saveCount++;
                 left++;
-                save++;
+                right--;
+            } else {
+                right--;
             }
-            
-            right--;
         }
         
-        return people.length - save;
+        return people.length - saveCount;
     }
 }
